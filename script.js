@@ -106,8 +106,9 @@
     var h1El = document.createElement("h1");
     var timerBoxEl = document.createElement("div");
     var questionBoxEl = document.createElement("div");
+    var questionBoxContainerEl = document.createElement("div");
     var answerBoxEl = document.createElement("div");
-        answerBoxEl.setAttribute("id", "answerbox")
+        
     var answersEl = document.createElement("ul");
     var answerOneEl = document.createElement("button");
     var answerTwoEl = document.createElement("button");
@@ -120,7 +121,8 @@
     newGameEl.textContent = "NEW GAME";
     body.appendChild(newGameEl);
     newGameEl.setAttribute("id", "new")
-    body.appendChild(questionBoxEl);
+    body.appendChild(questionBoxContainerEl);
+    questionBoxContainerEl.appendChild(questionBoxEl);
     body.appendChild(h1El);
     body.appendChild(timerBoxEl);
     body.appendChild(answerBoxEl);
@@ -130,41 +132,50 @@
     answersEl.appendChild(answerTwoEl);
     answersEl.appendChild(answerThreeEl);
     answersEl.appendChild(answerFourEl);
+    questionBoxContainerEl.setAttribute("id", "questionboxcontainer");
+    questionBoxEl.setAttribute("id", "questionbox");
+    answerBoxEl.setAttribute("id", "answerbox");
     
 // Set Initial Timer Value & Display Timer
 var gametimer = function () {
 var gametime = setInterval(function () {
-    h1El.textContent = "Timer: " + timer;
-    timer--;
+    if (timer > 0 | timer === 1) {
+        h1El.textContent = "Timer: " + timer;
+        timer--;
+    }
+    else {
+        
+        clearInterval(gametime);
+        h1El.textContent = "Timer: 0";   
+        clear();
+        var userInit = prompt('Please enter your initials.');    
 
-    if (timer === 0) {
-        endgame();
     }
 }, 1000);
 }
 
-var countdown = function() {
+// var countdown = function() {
    
-    var newTime = setInterval(function() {
-        h1El.textContent = "Timer: " + timer;
-        timer--;
+//     var newTime = setInterval(function() {
+//         h1El.textContent = "Timer: " + timer;
+//         timer--;
         
-        if (timer === 0) {
-            timer = 60;
-            gametimer();
-            newQuestion();
-        }
-    }, 1000);
+//         if (timer === 0) {
+//             timer = 60;
+//             gametimer();
+//             newQuestion();
+//         }
+//     }, 1000);
+// }
+
+
+
+
+var timer = 60;
+var newTime = function() {
+    h1El.textContent = "Timer: " + timer
 }
-
-
-
-
-    var timer = 05;
-    var newTime = function() {
-        h1El.textContent = "Timer: " + timer
-    }
-    newTime();
+newTime();
 
 var getRandomQuestion = function() {
    var ranQ = [Math.floor(Math.random()*questionPool.length)];
@@ -173,7 +184,7 @@ var getRandomQuestion = function() {
 }
 
 var clear = function() {
-    body.removeChild(questionBoxEl);
+    questionBoxContainerEl.removeChild(questionBoxEl);
     body.removeChild(answerBoxEl);
     answerBoxEl.removeChild(answersEl);
     answersEl.removeChild(answerOneEl);
@@ -183,18 +194,15 @@ var clear = function() {
 
 }
 
-var endgame = function() {
-    alert('Game Over');
-    clearInterval(gametime);
-}
 
 var newQuestion = function() {
-    if (timer <= 1 | questionPool.length === 0) {
+    if (timer < 1 || questionPool.length === 0) {
         endgame();
     }
     else {
     clear();
-    body.appendChild(questionBoxEl);
+    body.appendChild(questionBoxContainerEl);
+    questionBoxContainerEl.appendChild(questionBoxEl);
     body.appendChild(answerBoxEl);
     answerBoxEl.setAttribute("style",  "visibility:visible");
     answerBoxEl.appendChild(answersEl);
@@ -214,12 +222,19 @@ var newQuestion = function() {
     answerFourEl.setAttribute("data-time", activeQuestion.a4t);
     console.log(activeQuestion.q);
     questionPool.splice(questionPool.indexOf(activeQuestion), 1);
+    }
 }
+
+var startGame = function() {
+    gametimer();
+    newQuestion();
+}
+
+var endgame = function() {
     
+    
+    h1El.textContent = "00";
 }
-
-
-
 
 
 
@@ -251,7 +266,7 @@ var newQuestion = function() {
     var container = document.querySelector("#answerbox");   
 
     newEl.addEventListener("click", function(){
-        countdown();
+        startGame();
         newGameEl.remove();
     });
 
@@ -283,3 +298,5 @@ var newQuestion = function() {
 
 
 // When timer or questions equal to 0 seconds, endGame()
+
+// BUG: when you get -10 but dont have 10 you dont lose points bc it cant go below zero

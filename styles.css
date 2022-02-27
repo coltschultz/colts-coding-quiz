@@ -1,5 +1,5 @@
 body {
-  background-color: grey;
+  background-color: #dac292;
   font-weight: bold;
   text-align: center;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
@@ -18,10 +18,20 @@ button {
   border: none;
   padding: 10px 20px;
   background-color: aqua;
-  width: 400px;
+  width: 100%;
   margin: 5px auto;
+  border-radius: 10px;
 }
 
 button:hover {
   background-color: blueviolet;
+}
+
+#questionbox {
+  background-color: #b9936c;
+  padding: 20px;
+  font-size: x-large;
+}
+
+#questionboxcontainer {
 }
