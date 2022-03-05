@@ -79,6 +79,7 @@
     var timer = 60;
     var score = 00;
     var winners = [];
+    var scorePosted = 0;
 
 // Preset Elements
     var body = document.body;
@@ -161,28 +162,25 @@ var endgame = function() {
     var scoresQty = 5;
     var lowScore = scores[scoresQty - 1]?.score ?? 0;
 
-    questionBoxContainerEl.removeChild(questionBoxEl);
-    answerBoxEl.removeChild(answersEl);
-    answersEl.removeChild(answerOneEl);
-    answersEl.removeChild(answerTwoEl);
-    answersEl.removeChild(answerThreeEl);
-    answersEl.removeChild(answerFourEl);
+    answerBoxEl.setAttribute("style",  "visibility:hidden");
+    questionBoxContainerEl.setAttribute("style",  "visibility:hidden");
+   
     h1El.textContent = "Score: " + score;
+    if (scorePosted === 0) {
     var userInit = prompt('Please enter your initials.'); 
     var scoreId = userInit + '-' + (Math.floor(Math.random() * 10000));
     var userDataObj = { userInit, score, scoreId }
     scores.push(userDataObj);
     var scoreString = JSON.stringify(scores);
     localStorage.setItem('scores', scoreString);
+    
     getScores();
 
-    
+    }
 }
 
 var createList = function(userDataObj) {
     var scoreEl = document.querySelector("#scores");
-
-
     var userInfoEl = document.createElement("li");
     userInfoEl.innerHTML =
      "<h3>" + userDataObj.userInit + "</h3><h4>" + userDataObj.score + "</h4><hr>";
@@ -200,6 +198,8 @@ var getScores = function() {
     for (var i = 0; i < myscores.length; i++) {
         createList(myscores[i]);
     }
+
+    scorePosted = 1;
 }
   
 
@@ -221,7 +221,6 @@ var newQuestion = function() {
         endgame();
     }
     else {
-
     body.appendChild(questionBoxContainerEl);
     questionBoxContainerEl.appendChild(questionBoxEl);
     body.appendChild(answerBoxEl);
@@ -244,32 +243,6 @@ var newQuestion = function() {
     console.log(activeQuestion.q);
     questionPool.splice(questionPool.indexOf(activeQuestion), 1);
     }
-}
-
-var lastQuestion = function() {
-
-    body.appendChild(questionBoxContainerEl);
-    questionBoxContainerEl.appendChild(questionBoxEl);
-    body.appendChild(answerBoxEl);
-    answerBoxEl.setAttribute("style",  "visibility:visible");
-    answerBoxEl.appendChild(answersEl);
-    answersEl.appendChild(answerOneEl);
-    answersEl.appendChild(answerTwoEl);
-    answersEl.appendChild(answerThreeEl);
-    answersEl.appendChild(answerFourEl);
-    activeQuestion = getRandomQuestion();
-    questionBoxEl.textContent = "Thank you for playing.";
-    answerOneEl.textContent = "You may refresh to play again.";
-    answerOneEl.setAttribute("data-time", activeQuestion.a1t);
-    answerTwoEl.textContent = "Top 5 Scores Are Saved";
-    answerTwoEl.setAttribute("data-time", activeQuestion.a2t);
-    answerThreeEl.textContent = "Keep Trying for a High Score";
-    answerThreeEl.setAttribute("data-time", activeQuestion.a3t);
-    answerFourEl.textContent = "Game Over";
-    answerFourEl.setAttribute("data-time", activeQuestion.a4t);
-    console.log(activeQuestion.q);
-    questionPool.splice(questionPool.indexOf(activeQuestion), 1);
-    
 }
 
 // Handle Clicks
