@@ -1,4 +1,3 @@
-
 // Question List & Other Question Related Global Variables
     var q1 = {
         q: "q1 Which answer is correct?",
@@ -97,34 +96,41 @@
     }
 
     var questionPool = [q1, q2, q3, q4, q5, q6, q7, q8];
+    var howMany = 8;
     var questionIndex = "";
     var activeQuestion = "";
 
+    var timer = 60;
+    var score = 00;
+    var winners = [];
+
 // Preset Elements
     var body = document.body;
+    var scoreboard = document.querySelector("#scoreboard");
     var newGameEl = document.createElement("button");
     var h1El = document.createElement("h1");
     var timerBoxEl = document.createElement("div");
     var questionBoxEl = document.createElement("div");
     var questionBoxContainerEl = document.createElement("div");
     var answerBoxEl = document.createElement("div");
-        
     var answersEl = document.createElement("ul");
     var answerOneEl = document.createElement("button");
     var answerTwoEl = document.createElement("button");
     var answerThreeEl = document.createElement("button");
     var answerFourEl = document.createElement("button");
+    var scoreTableEl = document.createElement("div");
+    var scoreListEl = document.createElement("ul");
+    var userEntryEl = document.createElement("li");
 
 // Set Up Welcome Page
     questionBoxEl.textContent = "When you click the NEW GAME button below, the game will begin after a 5 second countdown. Missing questions will deduct time. Your score will equal the time you have left after completing all questions.";
     answerOneEl.textContent = "START GAME";
     newGameEl.textContent = "NEW GAME";
-    body.appendChild(newGameEl);
-    newGameEl.setAttribute("id", "new")
     body.appendChild(questionBoxContainerEl);
     questionBoxContainerEl.appendChild(questionBoxEl);
-    body.appendChild(h1El);
     body.appendChild(timerBoxEl);
+    body.appendChild(h1El);
+    h1El.textContent = "Time: 60 | Score: 00";
     body.appendChild(answerBoxEl);
     answerBoxEl.appendChild(answersEl);
     answerBoxEl.setAttribute("style",  "visibility:hidden");
@@ -135,47 +141,106 @@
     questionBoxContainerEl.setAttribute("id", "questionboxcontainer");
     questionBoxEl.setAttribute("id", "questionbox");
     answerBoxEl.setAttribute("id", "answerbox");
-    
+    timerBoxEl.appendChild(newGameEl);
+    newGameEl.setAttribute("id", "new");
+
 // Set Initial Timer Value & Display Timer
+    var newTime = function() {
+    h1El.textContent = "Time: " + timer + " | Score: " + score + " | Question: (" + howMany + " of 8)"
+}
+
 var gametimer = function () {
 var gametime = setInterval(function () {
-    if (timer > 0 | timer === 1) {
-        h1El.textContent = "Timer: " + timer;
+    if (timer && howMany>0) {
+        h1El.textContent = "Time: " + timer + " | Score: " + score + " | Question: (" + howMany + " of 8)"
         timer--;
+    }
+    else if (howMany<1) {
+        clearInterval(gametime);
+        h1El.textContent = "Score: " + score; 
+        endgame();
     }
     else {
         
         clearInterval(gametime);
-        h1El.textContent = "Timer: 0";   
+        h1El.textContent = "Score: " + score;   
         clear();
-        var userInit = prompt('Please enter your initials.');    
+        endgame();
 
     }
 }, 1000);
 }
 
-// var countdown = function() {
-   
-//     var newTime = setInterval(function() {
-//         h1El.textContent = "Timer: " + timer;
-//         timer--;
-        
-//         if (timer === 0) {
-//             timer = 60;
-//             gametimer();
-//             newQuestion();
-//         }
-//     }, 1000);
-// }
+
+// High Score & Endgame
 
 
 
 
-var timer = 60;
-var newTime = function() {
-    h1El.textContent = "Timer: " + timer
+
+var endgame = function() {
+    var scores = JSON.parse(localStorage.getItem('scores'));
+    
+
+    clear();
+    h1El.textContent = "Score: " + score;
+    var userInit = prompt('Please enter your initials.'); 
+    // body.appendChild(scoreTableEl);
+    // scoreTableEl.appendChild(scoreListEl);
+    // scoreListEl.textContent = "Player:" + userInit + ", Score: " + score
+    var scoreId = userInit + '-' + (Math.floor(Math.random() * 10000));
+    var userDataObj = { userInit, score, scoreId }
+    console.log(userDataObj);
+    scores.push(userDataObj);
+    console.log(scores);
+
+    var scoreString = JSON.stringify(scores);
+    localStorage.setItem('scores', scoreString);
+
+    getScores();
+
+    
 }
-newTime();
+
+var createList = function(userDataObj) {
+    var scoreEl = document.querySelector("#scores");
+
+
+    var userInfoEl = document.createElement("li");
+    userInfoEl.innerHTML =
+     "<h3>" + userDataObj.userInit + "</h3><h4>" + userDataObj.score + "</h4><hr>";
+    scoreEl.appendChild(userInfoEl);
+}
+
+var getScores = function() {
+    var scoreList = localStorage.getItem('scores');
+    var myscores = JSON.parse(scoreList);
+    var reversed = myscores.reverse();
+    reversed.splice(5);
+    console.log('myscores', myscores);
+
+    for (var i = 0; i < myscores.length; i++) {
+        // pass each task object into the `createTaskEl()` function
+        createList(myscores[i]);
+
+    }
+      
+   
+
+    // var paragraph = document.createElement("p");
+    // var infor = document.createTextNode(myscores);
+    // paragraph.appendChild(infor);
+    // scoreboard.appendChild(paragraph);
+    
+}
+  
+
+
+
+
+
+
+// Question Mechanics
 
 var getRandomQuestion = function() {
    var ranQ = [Math.floor(Math.random()*questionPool.length)];
@@ -193,7 +258,6 @@ var clear = function() {
     answersEl.removeChild(answerFourEl);
 
 }
-
 
 var newQuestion = function() {
     if (timer < 1 || questionPool.length === 0) {
@@ -230,37 +294,6 @@ var startGame = function() {
     newQuestion();
 }
 
-var endgame = function() {
-    
-    
-    h1El.textContent = "00";
-}
-
-
-
-
-// Check User's Answer onClick
-
-// Display Start Screen
-
-
-
-
-
-// Display Start Button
-
-// Make a new question
-//    var newQuestion = function() {
-    // questionBoxEl.textContent = q1.q;
-    // answerOneEl.textContent = q1.a1;
-
-    // answerOneEl.setAttribute("id", "answer");
-    // answerOneEl.setAttribute("data-time", q1.a1t);
-//    }
-
-
-    
-
 // Handle Clicks
     var newEl = document.querySelector("#new");
     var container = document.querySelector("#answerbox");   
@@ -270,20 +303,29 @@ var endgame = function() {
         newGameEl.remove();
     });
 
-    // Check Answer upon Selection
-    container.addEventListener("click", function(event) {
-        var element = event.target;
-        var val = element.dataset.number;
-        if (timer - element.dataset.time > 0) {
-            timer = timer - element.dataset.time;
-            newTime();
-            }
-            else {
-                // player is out of time, need to set conditions for this
-                // endgame();
-            }
-        newQuestion();
-      });
+
+
+// Check Answer upon Selection
+container.addEventListener("click", function(event) {
+    var element = event.target;
+    var val = element.dataset.number;
+    if (timer - element.dataset.time > 0) {
+        timer = timer - element.dataset.time;
+        newTime();
+        howMany--;
+        console.log(howMany);
+        }
+        else {
+            endgame();
+        }
+    if (element.dataset.time < 0) {
+        score = score - element.dataset.time;
+    }
+    newQuestion();
+    });
+
+
+
 
 // 3 table rows: timer, question, answers
 // When User Clicks Button:

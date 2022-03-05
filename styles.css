@@ -17,20 +17,23 @@ button {
   display: block;
   border: none;
   padding: 10px 20px;
-  background-color: aqua;
+  background-color: #405d27;
   width: 100%;
-  margin: 5px auto;
+  margin: 10px auto;
   border-radius: 10px;
+  font-weight: bold;
+  font-size: large;
 }
 
 button:hover {
-  background-color: blueviolet;
+  background-color: #82b74b;
 }
 
 #questionbox {
   background-color: #b9936c;
   padding: 20px;
   font-size: x-large;
+  border-radius: 15px;
 }
 
 #questionboxcontainer {
