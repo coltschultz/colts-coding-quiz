@@ -90,6 +90,7 @@
     var questionBoxContainerEl = document.createElement("div");
     var answerBoxEl = document.createElement("div");
     var answersEl = document.createElement("ul");
+    answersEl.setAttribute("id", "answerlist");
     var answerOneEl = document.createElement("button");
     var answerTwoEl = document.createElement("button");
     var answerThreeEl = document.createElement("button");
@@ -131,7 +132,7 @@ var gametime = setInterval(function () {
         h1El.textContent = "Time: " + timer + " | Score: " + score + " | Question: (" + howMany + " of 8)"
         timer--;
     }
-    else if (howMany<1) {
+    else if (howMany < 1 || howMany === 1) {
         clearInterval(gametime);
         h1El.textContent = "Score: " + score; 
         endgame();
@@ -140,7 +141,7 @@ var gametime = setInterval(function () {
         
         clearInterval(gametime);
         h1El.textContent = "Score: " + score;   
-        clear();
+        
         endgame();
 
     }
@@ -159,7 +160,13 @@ var endgame = function() {
     var scores = JSON.parse(localStorage.getItem('scores')) ?? [];
     var scoresQty = 5;
     var lowScore = scores[scoresQty - 1]?.score ?? 0;
-    clear();
+
+    questionBoxContainerEl.removeChild(questionBoxEl);
+    answerBoxEl.removeChild(answersEl);
+    answersEl.removeChild(answerOneEl);
+    answersEl.removeChild(answerTwoEl);
+    answersEl.removeChild(answerThreeEl);
+    answersEl.removeChild(answerFourEl);
     h1El.textContent = "Score: " + score;
     var userInit = prompt('Please enter your initials.'); 
     var scoreId = userInit + '-' + (Math.floor(Math.random() * 10000));
@@ -207,12 +214,6 @@ var getRandomQuestion = function() {
 var clear = function() {
     questionBoxContainerEl.removeChild(questionBoxEl);
     body.removeChild(answerBoxEl);
-    answerBoxEl.removeChild(answersEl);
-    answersEl.removeChild(answerOneEl);
-    answersEl.removeChild(answerTwoEl);
-    answersEl.removeChild(answerThreeEl);
-    answersEl.removeChild(answerFourEl);
-
 }
 
 var newQuestion = function() {
@@ -220,7 +221,7 @@ var newQuestion = function() {
         endgame();
     }
     else {
-    clear();
+
     body.appendChild(questionBoxContainerEl);
     questionBoxContainerEl.appendChild(questionBoxEl);
     body.appendChild(answerBoxEl);
@@ -245,6 +246,32 @@ var newQuestion = function() {
     }
 }
 
+var lastQuestion = function() {
+
+    body.appendChild(questionBoxContainerEl);
+    questionBoxContainerEl.appendChild(questionBoxEl);
+    body.appendChild(answerBoxEl);
+    answerBoxEl.setAttribute("style",  "visibility:visible");
+    answerBoxEl.appendChild(answersEl);
+    answersEl.appendChild(answerOneEl);
+    answersEl.appendChild(answerTwoEl);
+    answersEl.appendChild(answerThreeEl);
+    answersEl.appendChild(answerFourEl);
+    activeQuestion = getRandomQuestion();
+    questionBoxEl.textContent = "Thank you for playing.";
+    answerOneEl.textContent = "You may refresh to play again.";
+    answerOneEl.setAttribute("data-time", activeQuestion.a1t);
+    answerTwoEl.textContent = "Top 5 Scores Are Saved";
+    answerTwoEl.setAttribute("data-time", activeQuestion.a2t);
+    answerThreeEl.textContent = "Keep Trying for a High Score";
+    answerThreeEl.setAttribute("data-time", activeQuestion.a3t);
+    answerFourEl.textContent = "Game Over";
+    answerFourEl.setAttribute("data-time", activeQuestion.a4t);
+    console.log(activeQuestion.q);
+    questionPool.splice(questionPool.indexOf(activeQuestion), 1);
+    
+}
+
 // Handle Clicks
     var newEl = document.querySelector("#new");
     var container = document.querySelector("#answerbox");   
@@ -259,12 +286,14 @@ var newQuestion = function() {
 // Check Answer upon Selection
 container.addEventListener("click", function(event) {
     var element = event.target;
+    var parent = document.getElementById('answerbox');
+    var otherparent = document.getElementById('answerlist');
     var val = element.dataset.number;
+    if (element !== parent && element !== otherparent) {
     if (timer - element.dataset.time > 0) {
         timer = timer - element.dataset.time;
         newTime();
         howMany--;
-        console.log(howMany);
         }
         else {
             endgame();
@@ -273,4 +302,5 @@ container.addEventListener("click", function(event) {
         score = score - element.dataset.time;
     }
     newQuestion();
+    }
     });
