@@ -147,26 +147,26 @@ var gametime = setInterval(function () {
 }, 1000);
 }
 
+// Start Game
+var startGame = function() {
+    gametimer();
+    newQuestion();
+}
 
 // High Score & Endgame
 
 var endgame = function() {
     var scores = JSON.parse(localStorage.getItem('scores')) ?? [];
-    
-
+    var scoresQty = 5;
+    var lowScore = scores[scoresQty - 1]?.score ?? 0;
     clear();
     h1El.textContent = "Score: " + score;
     var userInit = prompt('Please enter your initials.'); 
-
     var scoreId = userInit + '-' + (Math.floor(Math.random() * 10000));
     var userDataObj = { userInit, score, scoreId }
-    console.log(userDataObj);
     scores.push(userDataObj);
-    console.log(scores);
-
     var scoreString = JSON.stringify(scores);
     localStorage.setItem('scores', scoreString);
-
     getScores();
 
     
@@ -185,9 +185,9 @@ var createList = function(userDataObj) {
 var getScores = function() {
     var scoreList = localStorage.getItem('scores');
     var myscores = JSON.parse(scoreList);
-
     myscores.sort(function(a,b){return b.score - a.score});
     myscores.splice(5);
+    
     console.log('myscores', myscores);
 
     for (var i = 0; i < myscores.length; i++) {
@@ -243,11 +243,6 @@ var newQuestion = function() {
     console.log(activeQuestion.q);
     questionPool.splice(questionPool.indexOf(activeQuestion), 1);
     }
-}
-
-var startGame = function() {
-    gametimer();
-    newQuestion();
 }
 
 // Handle Clicks
