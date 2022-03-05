@@ -38,3 +38,7 @@ button:hover {
 
 #questionboxcontainer {
 }
+
+ol {
+  list-style-type: none;
+}

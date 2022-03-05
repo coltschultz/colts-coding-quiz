@@ -1,102 +1,78 @@
 // Question List & Other Question Related Global Variables
     var q1 = {
-        q: "q1 Which answer is correct?",
-        a1: "Incorrect",
+        q: "Javascript is a programming _______.",
+        a1: "computer",
         a1t: 10,
-        a2: "Correct",
+        a2: "language",
         a2t: -10,
-        a3: "Incorrect",
+        a3: "book",
         a3t: 10,
-        a4: "Incorrect",
+        a4: "dog",
         a4t: 10
     }
 
     var q2 = {
-        q: "q2 Which answer is correct?",
-        a1: "Incorrect",
-        a1t: 10,
-        a2: "Correct",
-        a2t: -10,
-        a3: "Incorrect",
+        q: "Which is the Logical AND operator?",
+        a1: "&&",
+        a1t: -10,
+        a2: "%>",
+        a2t: 10,
+        a3: "&$",
         a3t: 10,
-        a4: "Incorrect",
+        a4: "*&",
         a4t: 10
     }
 
     var q3 = {
-        q: "q3 Which answer is correct?",
-        a1: "Incorrect",
+        q: "Which can be used to get a random number between 0 and 1?",
+        a1: "Math.floor()",
         a1t: 10,
-        a2: "Correct",
-        a2t: -10,
-        a3: "Incorrect",
-        a3t: 10,
-        a4: "Incorrect",
+        a2: "Math.get",
+        a2t: 10,
+        a3: "Math.random",
+        a3t: -10,
+        a4: "random.number",
         a4t: 10
     }
 
     var q4 = {
-        q: "q4 Which answer is correct?",
-        a1: "Incorrect",
+        q: "var is short for _______",
+        a1: "varnish",
         a1t: 10,
-        a2: "Correct",
+        a2: "variable",
         a2t: -10,
-        a3: "Incorrect",
+        a3: "very angry rabbits",
         a3t: 10,
-        a4: "Incorrect",
+        a4: "varting",
         a4t: 10
     }
 
     var q5 = {
-        q: "q5 Which answer is correct?",
-        a1: "Incorrect",
-        a1t: 10,
-        a2: "Correct",
-        a2t: -10,
-        a3: "Incorrect",
+        q: "To round a number down you can use",
+        a1: "Math.floor()",
+        a1t: -10,
+        a2: "round.down",
+        a2t: 10,
+        a3: "if(number=present){round down}",
         a3t: 10,
-        a4: "Incorrect",
+        a4: "floor()",
         a4t: 10
     }
 
     var q6 = {
-        q: "q6 Which answer is correct?",
-        a1: "Incorrect",
+        q: "Jquery was invented by",
+        a1: "Myspace",
         a1t: 10,
-        a2: "Correct",
-        a2t: -10,
-        a3: "Incorrect",
+        a2: "Instagram",
+        a2t: 10,
+        a3: "Facebook",
         a3t: 10,
-        a4: "Incorrect",
-        a4t: 10
+        a4: "Twitter",
+        a4t: -10
     }
 
-    var q7 = {
-        q: "q7 Which answer is correct?",
-        a1: "Incorrect",
-        a1t: 10,
-        a2: "Correct",
-        a2t: -10,
-        a3: "Incorrect",
-        a3t: 10,
-        a4: "Incorrect",
-        a4t: 10
-    }
-
-    var q8 = {
-        q: "q8 Which answer is correct?",
-        a1: "Incorrect",
-        a1t: 10,
-        a2: "Correct",
-        a2t: -10,
-        a3: "Incorrect",
-        a3t: 10,
-        a4: "Incorrect",
-        a4t: 10
-    }
-
-    var questionPool = [q1, q2, q3, q4, q5, q6, q7, q8];
-    var howMany = 8;
+    var questionPool = [q1, q2, q3, q4, q5, q6];
+    var howMany = 6;
     var questionIndex = "";
     var activeQuestion = "";
 
@@ -174,20 +150,14 @@ var gametime = setInterval(function () {
 
 // High Score & Endgame
 
-
-
-
-
 var endgame = function() {
-    var scores = JSON.parse(localStorage.getItem('scores'));
+    var scores = JSON.parse(localStorage.getItem('scores')) ?? [];
     
 
     clear();
     h1El.textContent = "Score: " + score;
     var userInit = prompt('Please enter your initials.'); 
-    // body.appendChild(scoreTableEl);
-    // scoreTableEl.appendChild(scoreListEl);
-    // scoreListEl.textContent = "Player:" + userInit + ", Score: " + score
+
     var scoreId = userInit + '-' + (Math.floor(Math.random() * 10000));
     var userDataObj = { userInit, score, scoreId }
     console.log(userDataObj);
@@ -215,30 +185,16 @@ var createList = function(userDataObj) {
 var getScores = function() {
     var scoreList = localStorage.getItem('scores');
     var myscores = JSON.parse(scoreList);
-    var reversed = myscores.reverse();
-    reversed.splice(5);
+
+    myscores.sort(function(a,b){return b.score - a.score});
+    myscores.splice(5);
     console.log('myscores', myscores);
 
     for (var i = 0; i < myscores.length; i++) {
-        // pass each task object into the `createTaskEl()` function
         createList(myscores[i]);
-
     }
-      
-   
-
-    // var paragraph = document.createElement("p");
-    // var infor = document.createTextNode(myscores);
-    // paragraph.appendChild(infor);
-    // scoreboard.appendChild(paragraph);
-    
 }
   
-
-
-
-
-
 
 // Question Mechanics
 
@@ -323,22 +279,3 @@ container.addEventListener("click", function(event) {
     }
     newQuestion();
     });
-
-
-
-
-// 3 table rows: timer, question, answers
-// When User Clicks Button:
-// Count Down Timer for 5 Seconds
-// User Timers-Intervals activity
-// Start the game
-// Set the timer to 60 seconds
-// newQuestion()
-// If user selects incorrect answer, deduct 5 seconds, newQuestion()
-// use data-attributes activity to adjust score
-// If user selects correct answer, newQuestion()
-
-
-// When timer or questions equal to 0 seconds, endGame()
-
-// BUG: when you get -10 but dont have 10 you dont lose points bc it cant go below zero
